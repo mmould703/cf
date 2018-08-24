@@ -1,0 +1,20 @@
+Description: 'Template deploys an AMI, that is attached to a couple of resources
+  created in a parent CloudFormation template, 1) a public subnet & 2) a
+  Security Group allowing SSH from any IP (great for initial testing,
+  never Production).'
+Parameters:
+  NetworkStackNameParameter:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+Resources:
+  EC2I3ZRLK:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      AvailabilityZone: us-east-1a
+      ImageId: ami-b70554c8
+      InstanceType: t2.micro
+      SubnetId:
+        Fn::ImportValue: !Sub ${NetworkStackNameParameter}-SubnetID
+      KeyName: MyKeyPair
+      SecurityGroupIds:
+        - Fn::ImportValue: !Sub ${NetworkStackNameParameter}-SecurityGroupID
